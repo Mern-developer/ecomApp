@@ -26,7 +26,7 @@ return (
     </thead>
     <tbody>
     
-    {cart.map((item, i)=>{
+    {cart?.map((item, i)=>{
       return(
         <tr key={i} className="mt-16">
         <td  className="">

@@ -1,25 +1,40 @@
 "use client";
+import { API } from "@/API";
+import { setCookie } from "@/hooks/cookies";
+import useCartStore from "@/store/zusStore";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import toast from "react-hot-toast";
 
 export default function Home() {
   const router = useRouter();
+const keepUserId = useCartStore((state)=>state.keepUserId)
+const userId = useCartStore((state)=>state.userId)
+console.log(userId, "keepUserId")
   const [formData, setFormData]=useState({
     email: "",
     password: ""
   })
-  console.log(formData)
+  // console.log(formData)
   const handleredirect = async (e) => {
     e.preventDefault();
     try {
-      const res = await signIn("credentials", {
-        formData
-      });
-       console.log(res);
-       router.replace(`product-page`);
+      const res = await API.Login(formData);
+      //  console.log(res.data);
+       if(res.data){
+        toast.success(`${res.data.Message}`)
+        setCookie(res.data.data.token)
+        keepUserId(res.data.data)
+        router.replace(`/product-page`);
+       }
+       if(res.data.error){
+        toast.error(`${res.data.error}`)
+       }
     } catch (err) {
       console.log(err.message);
+      toast.error(`${err.message}`)
+
     }
   };
   return (

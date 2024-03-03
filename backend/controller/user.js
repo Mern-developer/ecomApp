@@ -12,9 +12,8 @@ module.exports = {
         password,
         existEmail.password || ""
       );
-
+   generateToken(existEmail._id, res); 
       if (loginSuccess) {
-        generateToken(existEmail._id, res);
         res.status(200).json({
           Message: "Login Successfully!",
           data: {
@@ -26,7 +25,7 @@ module.exports = {
         res.status(400).json({ Message: "Invalid Password!" });
       }
     } catch (err) {
-      res.status(201).json({ error: `something went wrong ${err.message}` });
+      res.status(500).json({ error: `something went wrong ${err.message}` });
     }
   },
 

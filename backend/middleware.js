@@ -1,5 +1,5 @@
 const jwt = require("jsonwebtoken");
-const User = require("../model/authUserModel");
+const User = require("./model/signup.js");
 
 const protectedRoutes= async (req, res, next)=>{
     try{

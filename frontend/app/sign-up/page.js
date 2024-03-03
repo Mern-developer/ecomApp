@@ -1,7 +1,44 @@
+'use client'
+import { API } from '@/API'
+import { getCookie, setCookie } from '@/hooks/cookies'
+import useCartStore from '@/store/zusStore'
 import Link from 'next/link'
-import React from 'react'
+import { useRouter } from 'next/navigation'
+import React, { useState } from 'react'
+import toast from 'react-hot-toast'
 
 const Page = () => {
+  const router = useRouter();
+const keepUserId = useCartStore((state)=>state.keepUserId)
+const userId = useCartStore((state)=>state.userId)
+console.log(userId, "keepUserId")
+  const [formData, setFormData]=useState({
+    email: "",
+    password: ""
+  })
+  const handleredirect = async (e) => {
+    e.preventDefault();
+    try {
+      const res = await API.siginUp(formData);
+       console.log(res.data);
+       if(res.data){
+        toast.success(`${res.data.Message}`)
+        keepUserId(res.data.data)
+        router.replace(`/product-page`);
+       }
+       if(res.data.error){
+        let token = getCookie('jwt')
+        console.log(token)
+        toast.error(`${res.data.error}`)
+        toast.success(`Hello si`)
+
+       }
+    } catch (err) {
+      console.log(err.message);
+      toast.error(`${err.message}`)
+
+    }
+  };
   return (
     <>
     <div className="flex min-h-full flex-col justify-center px-6 py-12 lg:px-8">
@@ -12,7 +49,7 @@ const Page = () => {
     </div>
 
     <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
-      <form className="space-y-6" >
+      <form onSubmit={handleredirect} className="space-y-6" >
         <div>
           <label
             for="email"
@@ -23,6 +60,7 @@ const Page = () => {
           <div className="mt-2">
             <input
               id="email"
+              onChange={(e)=>setFormData(prev=> ({...prev, email: e.target.value}))}
               name="email"
               type="email"
               required
@@ -43,6 +81,7 @@ const Page = () => {
           <div className="mt-2">
             <input
               id="password"
+              onChange={(e)=>setFormData(prev=> ({...prev, password: e.target.value}))}
               name="password"
               type="password"
               required
