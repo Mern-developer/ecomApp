@@ -7,35 +7,28 @@ const useCartStore = create((set) => {
       : [];
   const initialUserId =
     typeof window !== "undefined"
-      ? JSON.parse(localStorage.getItem("userId")) || ''
-      : '';
+      ? JSON.parse(localStorage.getItem("userId")) || ""
+      : "";
 
   return {
     cart: initialCart,
     userId: initialUserId,
     addToCart: (item) =>
       set((state) => {
-        console.log(item);
-        const existItem = state.cart.find(
-          (cartItem) => cartItem.id === item.id
-        );
+        const existItem = state.cart.find((cartItem) => cartItem.id === item.id);
         if (existItem) {
-          console.log(existItem, "----");
           const updatedCart = state.cart.map((cartItem) =>
             cartItem.id === item.id
-              ? 
-                  {
-                    ...cartItem,
-                    quantity: item.quantity,
-                    totalPrice: item.totalPrice
-                  }
-                
+              ? {
+                  ...cartItem,
+                  quantity: item.quantity,
+                  totalPrice: item.totalPrice,
+                }
               : cartItem
           );
           localStorage.setItem("cart", JSON.stringify(updatedCart));
           return { cart: updatedCart };
         } else {
-          
           const updatedCart = [...state.cart, item];
           localStorage.setItem("cart", JSON.stringify(updatedCart));
           return { cart: updatedCart };
@@ -48,11 +41,14 @@ const useCartStore = create((set) => {
         localStorage.setItem("cart", JSON.stringify(updatedCart));
         return { cart: updatedCart };
       }),
-      keepUserId: (item)=> set((state)=>{
-        const updateUser = state.userId = item;
-        localStorage.setItem('userId', JSON.stringify(updateUser))
-        return { updateUser}
+
+    keepUserId: (item) =>
+      set((state) => {
+        const updatedUser = item; // Use spread to update existing values
+        localStorage.setItem("userId", JSON.stringify(updatedUser));
+        return { userId: updatedUser };
       }),
+
     clearCart: () => set({ cart: [] }),
   };
 });

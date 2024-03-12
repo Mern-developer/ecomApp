@@ -21,10 +21,11 @@ console.log(userId, "keepUserId")
     e.preventDefault();
     try {
       const res = await API.Login(formData);
-      //  console.log(res.data);
+       console.log(res.data);
+       console.log(res.data.data.token);
        if(res.data){
         toast.success(`${res.data.Message}`)
-        setCookie(res.data.data.token)
+        setCookie('jwt',res.data.data.token)
         keepUserId(res.data.data)
         router.replace(`/product-page`);
        }

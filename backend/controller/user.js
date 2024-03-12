@@ -12,13 +12,15 @@ module.exports = {
         password,
         existEmail.password || ""
       );
-   generateToken(existEmail._id, res); 
+      let token =  generateToken(existEmail._id, res);
+      console.log(token, '---token') 
       if (loginSuccess) {
         res.status(200).json({
           Message: "Login Successfully!",
           data: {
             _id: existEmail?._id,
             email: existEmail?.email,
+            token: token
           },
         });
       } else {
@@ -37,16 +39,10 @@ module.exports = {
       console.log(deletes, "delete");
 
       if (req.body?.email === deletes?.email) {
-        return res
-          .status(400)
-          .send({
-            status: 400,
-            message: `${deletes?.email} is already exsits!`,
-          });
+        return res.send({status: 400, message: `${deletes?.email} is already exsits!`});
       }
       const salt = await bcrypt.genSalt(10);
       const hashPass = await bcrypt.hash(req.body?.password, salt);
-
       const formData = new User({
         email: req.body?.email,
         password: hashPass,

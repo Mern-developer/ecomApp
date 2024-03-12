@@ -21,7 +21,7 @@ console.log(userId, "keepUserId")
     try {
       const res = await API.siginUp(formData);
        console.log(res.data);
-       if(res.data){
+       if(res.data.status !== 400){
         toast.success(`${res.data.Message}`)
         keepUserId(res.data.data)
         router.replace(`/product-page`);

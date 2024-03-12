@@ -7,18 +7,24 @@ import { FaCartShopping } from "react-icons/fa6";
 import { API } from "@/API";
 import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
+import { deleteCookie } from "@/hooks/cookies";
 
 const Header = () => {
   const router = useRouter();
   const cart = useCartStore((state) => state.cart);
   const keepUserId = useCartStore((state) => state.keepUserId);
   const userId = useCartStore((state) => state.userId);
-  const logout = () => {
+  console.log(userId)
+  const logout = async () => {
     try {
-      const res = API.logout();
-      keepUserId("");
-      toast.success(`Logout Sussesfully`);
-      router.push("/");
+      const res =await  API.logout();
+      console.log(res.status)
+      if(res.status === 201){
+        keepUserId("");
+        deleteCookie('jwt')
+        toast.success(`Logout Sussesfully`);
+        router.push("/");
+      }
     } catch (err) {
       console.log(err.message);
     }
@@ -33,7 +39,7 @@ const Header = () => {
           </h1>
         </div>
         <div className="ml-auto pr-2 text-sm text-indigo-900">
-          {userId.email}
+          {userId?.email}
         </div>
         <div className="relative">
           <Link href="/product-page/cart">
